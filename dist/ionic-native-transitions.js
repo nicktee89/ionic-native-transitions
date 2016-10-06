@@ -438,7 +438,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var type = options.type;
 	            delete options.type;
 	            $rootScope.$broadcast('ionicNativeTransitions.beforeTransition');
-	            window.plugins.nativepagetransitions[type](options, transitionSuccess.bind(this, getTransitionDuration(options)), transitionError.bind(this, getTransitionDuration(options)));
+	            window.plugins.nativepagetransitions[type](options, transitionSuccess.bind(this, getTransitionDuration(options), callback), transitionError.bind(this, getTransitionDuration(options), callback));
 	        }
 	
 	        function transitionSuccess(duration, cb) {
