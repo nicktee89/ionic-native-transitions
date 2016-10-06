@@ -1,14 +1,4 @@
-BEWARE!!!
-
-This plugin is not maintained anymore.
-
-https://twitter.com/julienrenaux/status/776533610631426049
-https://twitter.com/julienrenaux/status/776534014651928576
-
-
-
-
-
+#Fixed Screen flickering problem
 
 ---
 

@@ -124,6 +124,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports['default'] = function () {
 	    'ngInject';
 	
+	    $get.$inject = ["$log", "$ionicConfig", "$rootScope", "$timeout", "$state", "$location", "$ionicHistory", "$ionicPlatform"];
 	    var enabled = true,
 	        $stateChangeStart = null,
 	        $stateChangeSuccess = null,
@@ -155,7 +156,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        backInOppositeDirection: false // Disable default back transition and uses the opposite transition to go back
 	    };
 	
-	    $get.$inject = ["$log", "$ionicConfig", "$rootScope", "$timeout", "$state", "$location", "$ionicHistory", "$ionicPlatform"];
 	    return {
 	        $get: $get,
 	        enable: enable,
@@ -335,10 +335,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	
 	            unregisterToStateChangeStartEvent();
-	            transition(transitionOptions);
-	            return $timeout(function () {
-	                return $state.go(state, stateParams, stateOptions);
+	            transition(transitionOptions, function () {
+	                return $timeout(function () {
+	                    return $state.go(state, stateParams, stateOptions);
+	                });
 	            });
+	            return;
 	        }
 	
 	        /**
@@ -402,8 +404,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                return;
 	            }
 	            var options = {};
+	            var callback = null;
 	            if (angular.isObject(arguments[0])) {
 	                options = angular.extend({}, defaultBackTransition, arguments[0]);
+	                callback = arguments[1] ? arguments[1] : null;
 	            } else if (angular.isString(arguments[0])) {
 	                switch (arguments[0]) {
 	                    case 'back':
@@ -427,6 +431,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 	            } else {
 	                options = defaultTransition;
+	                callback = arguments[1] ? arguments[1] : null;
 	            }
 	            options = angular.copy(options);
 	            $log.debug('[native transition]', options);
@@ -436,13 +441,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	            window.plugins.nativepagetransitions[type](options, transitionSuccess.bind(this, getTransitionDuration(options)), transitionError.bind(this, getTransitionDuration(options)));
 	        }
 	
-	        function transitionSuccess(duration) {
+	        function transitionSuccess(duration, cb) {
+	            if (cb) cb();
 	            setTimeout(function () {
 	                return $rootScope.$broadcast('ionicNativeTransitions.success');
 	            }, duration);
 	        }
 	
-	        function transitionError(duration) {
+	        function transitionError(duration, cb) {
+	            if (cb) cb();
 	            setTimeout(function () {
 	                return $rootScope.$broadcast('ionicNativeTransitions.error');
 	            }, duration);
